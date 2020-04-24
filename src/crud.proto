@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package crud;
+
+option go_package = ".;crud";
+
+service Crud {
+    rpc List(ListRequest) returns (ListResponse);
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
+
+message ListRequest {
+    oneof part_id_or_manufacutrer_id{
+        int32 id = 2;
+        int32 manufacturer_id = 1;
+    }
+}
+message Part {
+    int32 id = 1;
+    string manufacturer = 2;
+    string vendor_code = 3;
+    string created_at = 4;
+}
+message ListResponse {
+    repeated Part parts = 1;
+}
+
+message CreatePart {
+    int32 manufacturer_id = 1;
+    string vendor_code = 2;
+}
+message CreateRequest {
+    repeated CreatePart parts = 1;
+}
+message CreateResponse {
+    enum Status {
+        SUCCESS = 0;
+        WRONG_MANUFACTURER = 1;
+        WRONG_VENDOR_CODE = 2;
+        UNKNOWN_ERROR = 3;
+    };
+    Status status = 1;
+    string message = 2;
+}
+
+message DeleteRequest {
+    repeated int32 id = 1;
+}
+
+message DeleteResponse {
+    enum Status {
+        SUCCESS = 0;
+        WRONG_PART_ID = 1;
+        OTHER_ERROR = 2;
+    };
+    Status status = 1;
+    string message = 2;
+}
